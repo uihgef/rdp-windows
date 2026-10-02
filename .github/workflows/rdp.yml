@@ -1,4 +1,4 @@
-name: Run Windows RDP via Docker & Tailscale
+: Run Windows RDP via Docker & Tailscale
 
 on:
   workflow_dispatch:
