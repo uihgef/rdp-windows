@@ -11,22 +11,23 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Connect to Tailscale
-        uses: tailscale/github-action@v2
+        uses: tailscale/github-action@v3
         with:
+          oauth-client-id: ''
+          oauth-secret: ''
           authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
 
       - name: Run Windows Container (Docker)
         run: |
           docker run -d \
             --name windows \
-            --device=/dev/kvm \
             --cap-add=NET_ADMIN \
             -p 8006:8006 \
             -p 3389:3389/tcp \
             -p 3389:3389/udp \
             -e VERSION="11" \
-            -e RAM_SIZE="6G" \
-            -e CPU_CORES="4" \
+            -e RAM_SIZE="4G" \
+            -e CPU_CORES="2" \
             --restart always \
             dockur/windows
 
