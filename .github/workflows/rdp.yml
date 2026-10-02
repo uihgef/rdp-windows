@@ -1,0 +1,38 @@
+name: Run Windows RDP via Docker & Tailscale
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          tags: tag:ci
+        env:
+          TAILSCALE_AUTHKEY: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+      - name: Run Windows Container (Docker)
+        run: |
+          docker run -d \
+            --name windows \
+            --device=/dev/kvm \
+            --cap-add=NET_ADMIN \
+            -p 8006:8006 \
+            -p 3389:3389/tcp \
+            -p 3389:3389/udp \
+            -e VERSION="11" \
+            -e RAM_SIZE="6G" \
+            -e CPU_CORES="4" \
+            --restart always \
+            dockur/windows
+
+      - name: Keep Server Alive
+        run: |
+          echo "السيرفر شغال حالياً..."
+          sleep 21600
